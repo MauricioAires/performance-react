@@ -1,4 +1,18 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
+import dynamic from 'next/dynamic'
+// import { AddProductToWishlist } from './AddProductToWishlist'
+
+/**
+ * @description para aplicaçãoes que não possui SRR pode utilizar o  React.lazy()
+ * como o next possui SRR deve ser utiizar o dymanuc
+ */
+const AddProductToWishlist = dynamic(
+  () =>
+    import('./AddProductToWishlist').then((mod) => mod.AddProductToWishlist),
+  {
+    loading: () => <span>Carregando ...</span>
+  }
+)
 
 interface ProductItemProps {
   product: {
@@ -14,12 +28,22 @@ export function ProductItemComponent({
   product,
   onAddToWishLList
 }: ProductItemProps) {
+  const [isAddingToWishlist, setIsAddingToWishlist] = useState(false)
   return (
     <div>
       {product.title} - <strong>{product.priceFormatted}</strong>
-      <button onClick={() => onAddToWishLList(product.id)} type="button">
-        Add to wishlist
+      <button type="button" onClick={() => setIsAddingToWishlist(true)}>
+        Adiciona aos favoritos
       </button>
+      {isAddingToWishlist && (
+        <AddProductToWishlist
+          onAddToWishlist={() => {
+            onAddToWishLList(product.id)
+            setIsAddingToWishlist(false)
+          }}
+          onRequestClose={() => setIsAddingToWishlist(false)}
+        />
+      )}
     </div>
   )
 }
