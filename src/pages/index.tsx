@@ -5,6 +5,7 @@ type Product = {
   id: number
   price: number
   title: string
+  priceFormatted: string
 }
 
 type Results = {
@@ -30,13 +31,23 @@ export default function Home() {
 
     const data = await response.json()
 
+    const formatter = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    })
+
+    const products = data.map((product: Product) => ({
+      ...product,
+      priceFormatted: formatter.format(product.price)
+    }))
+
     const totalPrice = data.reduce((total: number, product: Product) => {
       return total + product.price
     }, 0)
 
     setResults({
       totalPrice,
-      data
+      data: products
     })
   }
 

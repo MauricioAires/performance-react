@@ -4,6 +4,7 @@ export type Product = {
   id: number
   price: number
   title: string
+  priceFormatted: string
 }
 
 interface SearchResultsProps {
